@@ -1,37 +1,68 @@
+
+import java.time.LocalDateTime;
+
 public class Employee {
+    private String name;
+    private double hoursWorked;
+    private int startTime;
+    private boolean punchedIn;
 
-    String name;
-    int hoursWorked;
-    double payRate;
-
-    public Employee(String name, int hoursWorked, double payRate) {
+    public Employee(String name) {
         this.name = name;
-        this.hoursWorked = hoursWorked;
-        this.payRate = payRate;
+        this.hoursWorked = 0;
+        this.punchedIn = false;
     }
 
-    public double getTotalPay() {
-        double totalPay = this.hoursWorked * this.payRate;
-        return totalPay;
+    public boolean punchIn(int time) {
+        if (!punchedIn) {
+            this.startTime = time;
+            this.punchedIn = true;
+            return true;
+        }
+        return false;
     }
 
-    public int getRegularHours() {
+    public boolean punchIn() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        int hour = currentTime.getHour();
+        int minute = currentTime.getMinute();
+        int time = (hour * 60) + minute;
 
-        if(this.hoursWorked > 40) {
-            return 40;
+        return punchIn(time);
+    }
+
+    public boolean punchOut(int time) {
+        if (punchedIn) {
+            double hours = (time - this.startTime) / 60.0;
+            this.hoursWorked += hours;
+            this.punchedIn = false;
+            return true;
         }
-        else {
-            return this.hoursWorked;
+        return false;
+    }
+
+    public boolean punchOut() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        int hour = currentTime.getHour();
+        int minute = currentTime.getMinute();
+        int time = (hour * 60) + minute;
+
+        return punchOut(time);
+    }
+
+    public boolean punchTimeCard(int time) {
+        if (!punchedIn) {
+            return punchIn(time);
+        } else {
+            return punchOut(time);
         }
     }
 
-    public int getOvertimeHours() {
-        if(this.hoursWorked > 40) {
-            return this.hoursWorked - 40;
-        }
-        else {
-            return 0;
-        }
+    public double getHoursWorked() {
+        return hoursWorked;
     }
 
+    public String getName() {
+        return name;
+    }
 }

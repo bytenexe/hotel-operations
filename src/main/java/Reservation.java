@@ -10,6 +10,9 @@ public class Reservation {
 
     }
 
+    public Reservation() {
+    }
+
     public String getRoomType() {
         return roomType;
     }
